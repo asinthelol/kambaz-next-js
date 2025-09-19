@@ -268,7 +268,7 @@ export default function Lab1() {
       <select id="wd-select-one-genre">
         <option value="COMEDY">Comedy</option>
         <option value="DRAMA">Drama</option>
-        <option selected value="SCIFI">
+        <option value="SCIFI">
             Science Fiction</option>
         <option value="FANTASY">Fantasy</option>
         </select>
