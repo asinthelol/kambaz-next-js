@@ -26,7 +26,6 @@ export default function Lab1() {
           This is the third paragraph. Wrap each paragraph with the paragraph
           tag to tell browsers to render the gaps.
         </p>
-        {/* continue here */}
       </div>
 
       <div id="wd-lists">
@@ -56,7 +55,7 @@ export default function Lab1() {
         <ul id="wd-my-books">
           <li>Dune</li>
           <li>Lord of the Rings</li>
-          <li>Ender's Game</li>
+          <li>Ender&apos;s Game</li>
           <li>Red Mars</li>
           <li>The Forever War</li>
         </ul>
@@ -65,7 +64,7 @@ export default function Lab1() {
         <ul id="wd-your-books">
           <li>The Anthropocene Reviewed</li>
           <li>Turtles All The Way Down</li>
-          <li>Omniscient Reader's Viewpoint</li>
+          <li>Omniscient Reader&apos;s Viewpoint</li>
         </ul>
 
 
@@ -276,16 +275,15 @@ export default function Lab1() {
       <h5>Select many</h5>
       <label  htmlFor="wd-select-many-genre"> Favorite movie genres: </label><br/>
       <select multiple id="wd-select-many-genre">
-        <option value="COMEDY"> Comedy          </option>
-        <option value="DRAMA">           Drama           </option>
+        <option value="COMEDY"> Comedy</option>
+        <option value="DRAMA">Drama</option>
         <option value="SCIFI"> Science Fiction </option>
-        <option value="FANTASY">         Fantasy         </option>
+        <option value="FANTASY">Fantasy</option>
       </select>
 
       <h4>Anchor tag</h4>
       Please <a href="https://www.lipsum.com" id="wd-lipsum">click here</a> to get dummy text<br/>
 
 
-      {/* do the next exercise here */}
     </div>
 );}
