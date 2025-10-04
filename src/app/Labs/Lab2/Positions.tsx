@@ -30,7 +30,7 @@ export default function Positions() {
 
       <div id={styles["wd-css-position-fixed"]}>
         <h2>Fixed position</h2>
-        Checkout the blue square that says &quot;Fixed position&quot; stuck all the way on the right and half way down the page. It doesn't scroll with the rest of the page. Its position is &quot;Fixed&quot;.
+        Checkout the blue square that says &quot;Fixed position&quot; stuck all the way on the right and half way down the page. It doesn&apos;t scroll with the rest of the page. Its position is &quot;Fixed&quot;.
         <div className={`${styles["wd-pos-fixed"]} ${styles["wd-dimension-square"]} ${styles["wd-bg-color-blue"]} ${styles["wd-fg-color-white"]}`}>
           Fixed position
         </div>
