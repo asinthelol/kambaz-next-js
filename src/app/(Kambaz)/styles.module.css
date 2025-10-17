@@ -30,3 +30,17 @@ body * { font-family:
   background-color: white;
   border-left: 3px solid black !important;
 }
+
+/* Active left bar for course nav links */
+.wdActiveLeftBar {
+  position: relative;
+}
+.wdActiveLeftBar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: black;
+}

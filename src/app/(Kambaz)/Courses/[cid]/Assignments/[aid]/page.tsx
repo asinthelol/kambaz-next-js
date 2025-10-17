@@ -1,13 +1,28 @@
-import { Form, Button, Row, Col, FormControl, FormLabel, FormCheck, FormSelect } from 'react-bootstrap';
+'use client';
+
+import { Form, Row, Col, FormControl, FormLabel, FormCheck, FormSelect } from 'react-bootstrap';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import * as db from '@/app/(Kambaz)/Database';
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams<{ cid: string; aid: string }>();
+  const assignment = db.assignments.find(a => a._id === aid && a.course === cid);
+
+  // Fallbacks for missing assignment
+  const title = assignment?.title || '';
+  const description = assignment?.description || '';
+  const points = assignment?.points || 100;
+  const dueDate = assignment?.dueDate || '';
+  const availableDate = assignment?.availableDate || '';
+
   return (
     <div id="wd-assignments-editor">
       <Form>
         <Row className="mb-3">
           <Col sm={6}>
             <FormLabel htmlFor="wd-name">Assignment Name</FormLabel>
-            <FormControl id="wd-name" type="text" defaultValue="A1" />
+            <FormControl id="wd-name" type="text" defaultValue={title} />
           </Col>
         </Row>
 
@@ -17,7 +32,7 @@ export default function AssignmentEditor() {
               id="wd-description"
               as="textarea"
               rows={6}
-              defaultValue="The assignment is available online Submit a link to the landing page of"
+              defaultValue={description}
             />
           </Col>
         </Row>
@@ -27,7 +42,7 @@ export default function AssignmentEditor() {
             Points
           </FormLabel>
           <Col sm={5}>
-            <FormControl id="wd-points" type="number" defaultValue={100} />
+            <FormControl id="wd-points" type="number" defaultValue={points} />
           </Col>
         </Row>
 
@@ -79,44 +94,42 @@ export default function AssignmentEditor() {
           </Row>
         </fieldset>
 
-        <Row className="mb-3">
-          <FormLabel column sm={1} htmlFor="wd-assign-to">
-            Assign To
-          </FormLabel>
+        {/* Assign Area Card as Row */}
+        <Row className="mb-4 align-items-start">
+          <FormLabel column sm={1} className="fw-bold">Assign</FormLabel>
           <Col sm={5}>
-            <FormControl id="wd-assign-to" type="text" defaultValue="Everyone" />
-          </Col>
-        </Row>
-
-        <Row className="mb-3">
-          <FormLabel column sm={1} htmlFor="wd-due">
-            Due
-          </FormLabel>
-          <Col sm={5}>
-            <FormControl id="wd-due" type="date" defaultValue="2024-05-13" />
-          </Col>
-        </Row>
-
-        <Row className="mb-3">
-          <FormLabel column sm={1} htmlFor="wd-available-from">
-            Available from
-          </FormLabel>
-          <Col sm={2}>
-            <FormControl id="wd-available-from" type="date" defaultValue="2024-05-06" />
-          </Col>
-          <FormLabel column sm={1} htmlFor="wd-until">
-            Until
-          </FormLabel>
-          <Col sm={2}>
-            <FormControl id="wd-until" type="date" defaultValue="2024-05-20" />
+            <div className="p-3 border rounded bg-white">
+              <FormLabel htmlFor="wd-assign-to" className="mb-1">Assign to</FormLabel>
+              <FormControl id="wd-assign-to" type="text" defaultValue="Everyone" className="mb-3" />
+              <FormLabel htmlFor="wd-due" className="mb-1">Due</FormLabel>
+              <FormControl id="wd-due" type="datetime-local" defaultValue={dueDate ? dueDate + 'T23:59' : ''} className="mb-3" />
+              <Row className="align-items-end">
+                <Col>
+                  <FormLabel htmlFor="wd-available-from" className="mb-1">Available from</FormLabel>
+                  <FormControl id="wd-available-from" type="datetime-local" defaultValue={availableDate ? availableDate + 'T00:00' : ''} />
+                </Col>
+                <Col>
+                  <FormLabel htmlFor="wd-until" className="mb-1">Until</FormLabel>
+                  <FormControl id="wd-until" type="datetime-local" defaultValue={dueDate ? dueDate + 'T23:59' : ''} />
+                </Col>
+              </Row>
+            </div>
           </Col>
         </Row>
 
         <div className="d-flex justify-content-end">
-          <Button variant="secondary" className="me-2">
+          <Link
+            href={`/Courses/${cid}/Assignments`}
+            className="btn btn-secondary me-2"
+          >
             Cancel
-          </Button>
-          <Button variant="primary">Save</Button>
+          </Link>
+          <Link
+            href={`/Courses/${cid}/Assignments`}
+            className="btn btn-primary"
+          >
+            Save
+          </Link>
         </div>
       </Form>
     </div>
