@@ -1,15 +1,17 @@
 import { ReactNode } from "react";
 import CourseNavigation from "./Navigation";
 import { FaAlignJustify } from "react-icons/fa6";
+import { courses } from "../../Database/"
 
 export default async function CoursesLayout(
   { children, params }: Readonly<{ children: ReactNode; params: Promise<{ cid: string }> }>) {
  const { cid: cid } = await params;
+ const course = courses.find(c => c._id === cid);
  return (
   <div id="wd-courses">
     <h2 className="text-danger">
       <FaAlignJustify className="me-4 fs-4 mb-1" />
-      Course {cid}
+      {course?.name}
     </h2>
     <hr />
 
