@@ -1,19 +1,31 @@
 'use client';
 
-
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
+import { FaTrash } from "react-icons/fa";
 import Link from "next/link";
 import styles from '../../../styles.module.css';
 import LessonControlButtons from "./LessonControlButtons";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import AssignmentControls from "./AssignmentControls";
 import { useParams } from "next/navigation";
-import * as db from "@/app/(Kambaz)/Database";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
-  const assignments = db.assignments.filter(a => a.course === cid);
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const dispatch = useDispatch();
+
+  const courseAssignments = assignments.filter((a: any) => a.course === cid);
+
+  const handleDelete = (assignmentId: string) => {
+    if (window.confirm("Are you sure you want to remove this assignment?")) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
+
   return (
     <div id="wd-assignments">
       <div className="d-flex align-items-center mb-3">
@@ -32,7 +44,7 @@ export default function Assignments() {
             <span className="float-end fs-6" style={{ border: "solid thin gray", padding: "0.25rem 0.75rem", borderRadius: "2rem", display: "inline-block" }}>40% of Total</span>
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            {assignments.map((assignment) => (
+            {courseAssignments.map((assignment: any) => (
               <ListGroupItem className="wd-lesson p-3 ps-1" key={assignment._id}>
                 <BsGripVertical className="me-2 fs-3" />
                 <Link
@@ -41,10 +53,20 @@ export default function Assignments() {
                 >
                   {assignment.title}
                 </Link>
+                {currentUser?.role === "FACULTY" && (
+                  <button
+                    onClick={() => handleDelete(assignment._id)}
+                    className="btn btn-danger btn-sm float-end"
+                    id="wd-delete-assignment"
+                  >
+                    <FaTrash />
+                  </button>
+                )}
                 <LessonControlButtons />
                 <div className="text-muted small ms-5">
-                  <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 6 at 12:00am |<br />
-                  <b>Due</b> May 13 at 11:59pm | 100 points
+                  <span className="text-danger">Multiple Modules</span> | <b>Not available until</b>{" "}
+                  {assignment.availableFromDate ? new Date(assignment.availableFromDate).toLocaleDateString() : "May 6"} at 12:00am |<br />
+                  <b>Due</b> {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : "May 13"} at 11:59pm | {assignment.points || 100} points
                 </div>
               </ListGroupItem>
             ))}
