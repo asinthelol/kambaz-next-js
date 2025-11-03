@@ -12,13 +12,37 @@ import { useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteAssignment } from "./reducer";
 
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  description: string;
+  points: number;
+  dueDate?: string;
+  availableFromDate?: string;
+  availableUntilDate?: string;
+}
+
+interface User {
+  _id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
+interface RootState {
+  assignmentsReducer: { assignments: Assignment[] };
+  accountReducer: { currentUser: User | null };
+}
+
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const dispatch = useDispatch();
 
-  const courseAssignments = assignments.filter((a: any) => a.course === cid);
+  const courseAssignments = assignments.filter((a) => a.course === cid);
 
   const handleDelete = (assignmentId: string) => {
     if (window.confirm("Are you sure you want to remove this assignment?")) {
@@ -44,7 +68,7 @@ export default function Assignments() {
             <span className="float-end fs-6" style={{ border: "solid thin gray", padding: "0.25rem 0.75rem", borderRadius: "2rem", display: "inline-block" }}>40% of Total</span>
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            {courseAssignments.map((assignment: any) => (
+            {courseAssignments.map((assignment) => (
               <ListGroupItem className="wd-lesson p-3 ps-1" key={assignment._id}>
                 <BsGripVertical className="me-2 fs-3" />
                 <Link

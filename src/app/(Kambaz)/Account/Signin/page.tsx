@@ -8,12 +8,17 @@ import { useState } from "react";
 import * as db from "../../Database";
 import { FormControl, Button } from "react-bootstrap";
 
+interface Credentials {
+  username?: string;
+  password?: string;
+}
+
 export default function Signin() {
- const [credentials, setCredentials] = useState<any>({});
+ const [credentials, setCredentials] = useState<Credentials>({});
  const dispatch = useDispatch();
  const signin = () => {
    const user = db.users.find(
-     (u: any) =>
+     (u) =>
        u.username === credentials.username &&
        u.password === credentials.password
    );

@@ -5,10 +5,22 @@ import { FaPlus } from "react-icons/fa6";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
+interface User {
+  _id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
+interface RootState {
+  accountReducer: { currentUser: User | null };
+}
+
 export default function AssignmentControls() {
   const { cid } = useParams();
   const router = useRouter();
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
 
   const handleAddAssignment = () => {
     router.push(`/Courses/${cid}/Assignments/new`);

@@ -1,10 +1,11 @@
 import { useState } from "react";
 export default function EventObject() {
   const [event, setEvent] = useState(null);
-  const handleClick = (e: any) => {
-    e.target = e.target.outerHTML;
-    delete e.view;
-    setEvent(e);
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const eventCopy: any = { ...e };
+    eventCopy.target = (e.target as HTMLElement).outerHTML;
+    delete eventCopy.view;
+    setEvent(eventCopy);
   };
   return (
     <div>

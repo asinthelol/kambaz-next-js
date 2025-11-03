@@ -1,8 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { assignments } from "../../../Database";
 
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  description: string;
+  points: number;
+  dueDate?: string;
+  availableFromDate?: string;
+  availableUntilDate?: string;
+  availableDate?: string;
+  editing?: boolean;
+}
+
 const initialState = {
-  assignments: assignments,
+  assignments: assignments as Assignment[],
 };
 
 const assignmentsSlice = createSlice({
@@ -13,7 +26,7 @@ const assignmentsSlice = createSlice({
       state.assignments = action.payload;
     },
     addAssignment: (state, { payload: assignment }) => {
-      const newAssignment: any = {
+      const newAssignment: Assignment = {
         _id: new Date().getTime().toString(),
         title: assignment.title,
         course: assignment.course,
@@ -23,24 +36,24 @@ const assignmentsSlice = createSlice({
         availableFromDate: assignment.availableFromDate,
         availableUntilDate: assignment.availableUntilDate,
       };
-      state.assignments = [...state.assignments, newAssignment] as any;
+      state.assignments = [...state.assignments, newAssignment];
     },
     deleteAssignment: (state, { payload: assignmentId }) => {
       state.assignments = state.assignments.filter(
-        (assignment: any) => assignment._id !== assignmentId
+        (assignment) => assignment._id !== assignmentId
       );
     },
     updateAssignment: (state, { payload: assignment }) => {
-      state.assignments = state.assignments.map((a: any) =>
+      state.assignments = state.assignments.map((a) =>
         a._id === assignment._id ? assignment : a
-      ) as any;
+      );
     },
     editAssignment: (state, { payload: assignmentId }) => {
-      state.assignments = state.assignments.map((assignment: any) =>
+      state.assignments = state.assignments.map((assignment) =>
         assignment._id === assignmentId
           ? { ...assignment, editing: true }
           : assignment
-      ) as any;
+      );
     },
   },
 });

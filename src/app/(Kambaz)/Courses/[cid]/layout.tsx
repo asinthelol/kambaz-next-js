@@ -8,12 +8,27 @@ import { courses } from "../../Database/"
 import { usePathname, useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 
+interface Course {
+  _id: string;
+  name: string;
+  number: string;
+  startDate: string;
+  endDate: string;
+  department: string;
+  credits: number;
+  description: string;
+}
+
+interface RootState {
+  coursesReducer: { courses: Course[] };
+}
+
 export default function CoursesLayout(
   { children }: Readonly<{ children: ReactNode }>) {
 
   const { cid } = useParams();
-  const { courses } = useSelector((state: any) => state.coursesReducer);
-  const course = courses.find((course: any) => course._id === cid);
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
+  const course = courses.find((course) => course._id === cid);
   const pathname = usePathname();
   const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", "Quizzes", "Grades", "People"];
   

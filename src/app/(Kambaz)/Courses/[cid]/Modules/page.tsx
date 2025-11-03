@@ -32,7 +32,7 @@ type Lesson = {
 export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
-  const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { modules } = useSelector((state: { modulesReducer: { modules: Module[] } }) => state.modulesReducer);
   const dispatch = useDispatch();
 
   return (

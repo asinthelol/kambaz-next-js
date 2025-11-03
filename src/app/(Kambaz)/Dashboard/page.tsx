@@ -9,15 +9,49 @@ import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
 import { enrollUserInCourse, unenrollUserFromCourse } from "../Enrollments/reducer";
 
+interface Course {
+  _id: string;
+  name: string;
+  number: string;
+  startDate: string;
+  endDate: string;
+  department: string;
+  credits: number;
+  description: string;
+  author?: string;
+  image?: string;
+}
+
+interface User {
+  _id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
+interface Enrollment {
+  _id: string;
+  user: string;
+  course: string;
+}
+
+interface RootState {
+  coursesReducer: { courses: Course[] };
+  accountReducer: { currentUser: User | null };
+  enrollmentsReducer: { enrollments: Enrollment[] };
+}
+
 export default function Dashboard() {
-  const { courses } = useSelector((state: any) => state.coursesReducer);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
   const dispatch = useDispatch();
   
-  const [course, setCourse] = useState<any>({
+  const [course, setCourse] = useState<Course>({
     _id: "0", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15",
+    department: "D123", credits: 4,
     image: "/images/react.png", description: "New Description"
   });
   
@@ -25,7 +59,7 @@ export default function Dashboard() {
 
   const isEnrolled = (courseId: string) => {
     return enrollments.some(
-      (enrollment: any) =>
+      (enrollment) =>
         enrollment.user === currentUser?._id && enrollment.course === courseId
     );
   };
@@ -42,7 +76,7 @@ export default function Dashboard() {
     }
   };
 
-  const enrolledCourses = courses.filter((course: any) => isEnrolled(course._id));
+  const enrolledCourses = courses.filter((course) => isEnrolled(course._id));
   const displayedCourses = showAllCourses ? courses : enrolledCourses;
   const isFaculty = currentUser?.role === "FACULTY";
 
@@ -82,7 +116,7 @@ export default function Dashboard() {
       
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
-          {displayedCourses.map((course: any, index: number) => {
+          {displayedCourses.map((course, index) => {
             const enrolled = isEnrolled(course._id);
             
             return (
