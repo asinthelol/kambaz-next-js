@@ -1,8 +1,13 @@
 import { useState } from "react";
+
+interface EventCopy {
+  [key: string]: unknown;
+}
+
 export default function EventObject() {
-  const [event, setEvent] = useState(null);
+  const [event, setEvent] = useState<EventCopy | null>(null);
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const eventCopy: any = { ...e };
+    const eventCopy: EventCopy = { ...e };
     eventCopy.target = (e.target as HTMLElement).outerHTML;
     delete eventCopy.view;
     setEvent(eventCopy);
