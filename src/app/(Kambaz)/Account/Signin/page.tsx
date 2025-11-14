@@ -9,12 +9,12 @@ import { FormControl, Button } from "react-bootstrap";
 import * as client from "../client";
 
 interface Credentials {
-  username?: string;
-  password?: string;
+  username: string;
+  password: string;
 }
 
 export default function Signin() {
- const [credentials, setCredentials] = useState<Credentials>({});
+ const [credentials, setCredentials] = useState<Credentials>({ username: "", password: "" });
  const dispatch = useDispatch();
  const router = useRouter();
  const signin = async () => {

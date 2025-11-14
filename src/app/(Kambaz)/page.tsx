@@ -48,7 +48,7 @@ export default function Kambaz() {
     }
   };
   const addNewCourse = async () => {
-    const newCourse = await userClient.createCourse(courses);
+    const newCourse = await userClient.createCourse({});
     setCourses([ ...courses, newCourse ]);
   };
   const deleteCourse = async (courseId: string) => {

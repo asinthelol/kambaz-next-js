@@ -8,8 +8,13 @@ import * as db from "../../Database";
 import { FormControl, Button } from "react-bootstrap";
 import * as client from "../client";
 
+interface User {
+  username: string;
+  password: string;
+}
+
 export default function Signup() {
-  const [user, setUser] = useState<any>({ username: "", password: "" });
+  const [user, setUser] = useState<User>({ username: "", password: "" });
   const dispatch = useDispatch();
   const signup = async () => {
     const currentUser = await client.signup(user);
