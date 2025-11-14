@@ -4,8 +4,9 @@ import { Form, Row, Col, FormControl, FormLabel, FormCheck, FormSelect } from 'r
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
-import { addAssignment, updateAssignment } from '../reducer';
+import { addAssignment, updateAssignment as updateAssignmentAction } from '../reducer';
 import { useState, useEffect } from 'react';
+import * as assignmentsClient from '../client';
 
 interface Assignment {
   _id: string;
@@ -53,11 +54,13 @@ export default function AssignmentEditor() {
     }
   }, [existingAssignment, isNewAssignment]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (isNewAssignment) {
-      dispatch(addAssignment(assignment));
+      const newAssignment = await assignmentsClient.createAssignment(cid, assignment);
+      dispatch(addAssignment(newAssignment));
     } else {
-      dispatch(updateAssignment(assignment));
+      const updatedAssignment = await assignmentsClient.updateAssignment(assignment);
+      dispatch(updateAssignmentAction(updatedAssignment));
     }
     router.push(`/Courses/${cid}/Assignments`);
   };

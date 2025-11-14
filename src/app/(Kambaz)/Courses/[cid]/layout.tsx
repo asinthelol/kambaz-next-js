@@ -4,7 +4,6 @@ import { ReactNode } from "react";
 import CourseNavigation from "./Navigation";
 import CourseEnrollmentGuard from "./CourseEnrollmentGuard";
 import { FaAlignJustify } from "react-icons/fa6";
-import { courses } from "../../Database/"
 import { usePathname, useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 
