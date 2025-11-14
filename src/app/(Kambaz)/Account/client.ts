@@ -1,17 +1,45 @@
 import axios from "axios";
+
+interface Credentials {
+  username: string;
+  password: string;
+}
+
+interface User {
+  _id?: string;
+  username: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  dob?: string;
+  role?: string;
+}
+
+interface Course {
+  _id?: string;
+  name: string;
+  number: string;
+  startDate: string;
+  endDate: string;
+  department: string;
+  credits: number;
+  description: string;
+}
+
 const axiosWithCredentials = axios.create({ withCredentials: true });
 export const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 export const USERS_API = `${HTTP_SERVER}/api/users`;
 
-export const signin = async (credentials: any) => {
+export const signin = async (credentials: Credentials) => {
   const response = await axiosWithCredentials.post( `${USERS_API}/signin`, credentials );
   return response.data;
 };
-export const signup = async (user: any) => {
+export const signup = async (user: Partial<User>) => {
   const response = await axiosWithCredentials.post(`${USERS_API}/signup`, user);
   return response.data;
 };
-export const updateUser = async (user: any) => {
+export const updateUser = async (user: User) => {
   const response = await axiosWithCredentials.put(`${USERS_API}/${user._id}`, user);
   return response.data;
 };
@@ -27,7 +55,7 @@ export const findMyCourses = async () => {
   const { data } = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
   return data;
 };
-export const createCourse = async (course: any) => {
+export const createCourse = async (course: Partial<Course>) => {
   const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
   return data;
 };

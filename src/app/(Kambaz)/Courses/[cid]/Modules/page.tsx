@@ -7,11 +7,9 @@ import { BsGripVertical } from "react-icons/bs";
 import LessonControlButtons from "./LessonControlButtons";
 import ModuleControlButtons from "./ModuleControlButtons";
 import { useParams } from "next/navigation";
-import * as db from "@/app/(Kambaz)/Database";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addModule, deleteModule, editModule, updateModule, setModules } from "./reducer";
-import { v4 as uuidv4 } from "uuid";
 import * as coursesClient from "../../client";
 import * as modulesClient from "./client";
 
@@ -36,24 +34,25 @@ export default function Modules() {
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: { modulesReducer: { modules: Module[] } }) => state.modulesReducer);
   const dispatch = useDispatch();
-  const fetchModules = async () => {
+  const fetchModules = useCallback(async () => {
     const modules = await coursesClient.findModulesForCourse(cid as string);
     dispatch(setModules(modules));
-  };
+  }, [cid, dispatch]);
   useEffect(() => {
     fetchModules();
-  }, []);
+  }, [fetchModules]);
   const createModuleForCourse = async () => {
     if (!cid) return;
-    const newModule = { name: moduleName, course: cid };
-    const module = await coursesClient.createModuleForCourse(cid as string, newModule);
-    dispatch(addModule(module));
+    const courseId = Array.isArray(cid) ? cid[0] : cid;
+    const newModule = { name: moduleName, course: courseId };
+    const createdModule = await coursesClient.createModuleForCourse(courseId, newModule);
+    dispatch(addModule(createdModule));
   };
   const removeModule = async (moduleId: string) => {
     await modulesClient.deleteModule(moduleId);
     dispatch(deleteModule(moduleId));
   };
-  const saveModule = async (module: any) => {
+  const saveModule = async (module: Module) => {
     await modulesClient.updateModule(module);
     dispatch(updateModule(module));
   };
