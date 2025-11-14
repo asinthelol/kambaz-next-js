@@ -3,11 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button, Card, CardBody, CardImg, CardText, CardTitle, Col, FormControl, Row } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
+import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/reducer";
 import { enrollUserInCourse, unenrollUserFromCourse } from "../Enrollments/reducer";
+import * as coursesClient from "../Courses/client";
+import * as userClient from "../Account/client";
 
 interface Course {
   _id: string;
@@ -57,6 +59,34 @@ export default function Dashboard() {
   
   const [showAllCourses, setShowAllCourses] = useState(false);
 
+  const fetchCourses = async () => {
+    try {
+      const allCourses = await coursesClient.fetchAllCourses();
+      dispatch(setCourses(allCourses));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const createCourse = async () => {
+    const newCourse = await userClient.createCourse(course);
+    dispatch(addNewCourse(newCourse));
+  };
+
+  const updateExistingCourse = async () => {
+    const updatedCourse = await coursesClient.updateCourse(course);
+    dispatch(updateCourse(updatedCourse));
+  };
+
+  const removeCourse = async (courseId: string) => {
+    await coursesClient.deleteCourse(courseId);
+    dispatch(deleteCourse(courseId));
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
   const isEnrolled = (courseId: string) => {
     return enrollments.some(
       (enrollment) =>
@@ -89,10 +119,10 @@ export default function Dashboard() {
           <h5>New Course
             <button className="btn btn-primary float-end"
                     id="wd-add-new-course-click"
-                    onClick={() => dispatch(addNewCourse(course))} > Add </button>
+                    onClick={createCourse} > Add </button>
             <button className="btn btn-warning float-end me-2"
                     id="wd-update-course-click"
-                    onClick={() => dispatch(updateCourse(course))} > Update </button>
+                    onClick={updateExistingCourse} > Update </button>
           </h5><br />
           <FormControl value={course.name} className="mb-2"
                        onChange={(e) => setCourse({ ...course, name: e.target.value })} />
@@ -165,7 +195,7 @@ export default function Dashboard() {
 
                     {isFaculty && !showAllCourses && (
                       <>
-                        <button onClick={() => dispatch(deleteCourse(course._id))}
+                        <button onClick={() => removeCourse(course._id)}
                           className="btn btn-danger float-end"
                           id="wd-delete-course-click">
                           Delete

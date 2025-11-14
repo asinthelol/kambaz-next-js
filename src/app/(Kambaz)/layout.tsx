@@ -5,20 +5,23 @@ import KambazNavigation from "./Navigation/Navigation";
 import styles from "./styles.module.css";
 import store from "./store";
 import { Provider } from "react-redux";
+import Session from "./Account/Session";
 
 export default function KambazLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <Provider store={store}>
+      <Session>
       <div id={styles["wd-kambaz"]}>
         <div className="d-flex">
-        <div>
-          <KambazNavigation />
-        </div>
-        <div className={`flex-fill p-3 ${styles["wd-main-content-offset"]}`}>
-          {children}
+          <div>
+            <KambazNavigation />
+          </div>
+          <div className={`flex-fill p-3 ${styles["wd-main-content-offset"]}`}>
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </Session>
     </Provider>
   );
 }

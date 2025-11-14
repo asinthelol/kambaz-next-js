@@ -10,7 +10,9 @@ import AssignmentControlButtons from "./AssignmentControlButtons";
 import AssignmentControls from "./AssignmentControls";
 import { useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments } from "./reducer";
+import { useEffect } from "react";
+import * as assignmentsClient from "./client";
 
 interface Assignment {
   _id: string;
@@ -42,13 +44,25 @@ export default function Assignments() {
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const dispatch = useDispatch();
 
-  const courseAssignments = assignments.filter((a) => a.course === cid);
+  const fetchAssignments = async () => {
+    const assignments = await assignmentsClient.fetchAssignmentsForCourse(cid);
+    dispatch(setAssignments(assignments));
+  };
 
-  const handleDelete = (assignmentId: string) => {
+  const removeAssignment = async (assignmentId: string) => {
     if (window.confirm("Are you sure you want to remove this assignment?")) {
+      await assignmentsClient.deleteAssignment(cid, assignmentId);
       dispatch(deleteAssignment(assignmentId));
     }
   };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
+  const courseAssignments = assignments.filter((a) => a.course === cid);
+
+  const handleDelete = removeAssignment;
 
   return (
     <div id="wd-assignments">
