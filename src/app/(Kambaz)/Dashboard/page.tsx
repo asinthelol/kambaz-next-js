@@ -10,6 +10,7 @@ import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses
 import { enrollUserInCourse, unenrollUserFromCourse } from "../Enrollments/reducer";
 import * as coursesClient from "../Courses/client";
 import * as userClient from "../Account/client";
+import * as EnrollmentsClient from "../Enrollments/client";
 
 interface Course {
   _id: string;
@@ -94,14 +95,16 @@ export default function Dashboard() {
     );
   };
 
-  const handleEnroll = (courseId: string) => {
+  const handleEnroll = async (courseId: string) => {
     if (currentUser) {
+      await EnrollmentsClient.enrollInCourse(currentUser._id, courseId);
       dispatch(enrollUserInCourse({ userId: currentUser._id, courseId }));
     }
   };
 
-  const handleUnenroll = (courseId: string) => {
+  const handleUnenroll = async (courseId: string) => {
     if (currentUser) {
+      await EnrollmentsClient.unenrollFromCourse(currentUser._id, courseId);
       dispatch(unenrollUserFromCourse({ userId: currentUser._id, courseId }));
     }
   };

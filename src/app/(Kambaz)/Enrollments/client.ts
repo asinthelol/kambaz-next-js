@@ -36,3 +36,14 @@ export const fetchAllEnrollments = async () => {
   const response = await axiosWithCredentials.get(`${ENROLLMENTS_API}/enrollments`);
   return response.data;
 };
+
+// export const enrollUserInCourse = async (userId: string, courseId: string) => {
+//   const response = await axiosWithCredentials.post(`${ENROLLMENTS_API}/users/${userId}/courses/${courseId}`);
+//   console.log("Enrollment response:", response.data);
+//   return response.data;
+// };
+
+// export const unenrollUserFromCourse = async (userId: string, courseId: string) => {
+//   const response = await axiosWithCredentials.delete(`${ENROLLMENTS_API}/users/${userId}/courses/${courseId}`);
+//   return response.data;
+// };
