@@ -10,7 +10,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addModule, deleteModule, editModule, updateModule, setModules } from "./reducer";
-import * as coursesClient from "../../client";
+import * as client from "../../client";
 import * as modulesClient from "./client";
 
 type Module = {
@@ -34,18 +34,19 @@ export default function Modules() {
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: { modulesReducer: { modules: Module[] } }) => state.modulesReducer);
   const dispatch = useDispatch();
-  const fetchModules = useCallback(async () => {
-    const modules = await coursesClient.findModulesForCourse(cid as string);
+  const fetchModules = async () => {
+    const modules = await client.findModulesForCourse(cid as string);
     dispatch(setModules(modules));
-  }, [cid, dispatch]);
+  };
   useEffect(() => {
     fetchModules();
-  }, [fetchModules]);
+  }, []);
+
   const createModuleForCourse = async () => {
     if (!cid) return;
     const courseId = Array.isArray(cid) ? cid[0] : cid;
     const newModule = { name: moduleName, course: courseId };
-    const createdModule = await coursesClient.createModuleForCourse(courseId, newModule);
+    const createdModule = await client.createModuleForCourse(courseId, newModule);
     dispatch(addModule(createdModule));
   };
   const removeModule = async (moduleId: string) => {
@@ -56,13 +57,35 @@ export default function Modules() {
     await modulesClient.updateModule(module);
     dispatch(updateModule(module));
   };
+   const onRemoveModule = async (moduleId: string) => {
+   const courseId = Array.isArray(cid) ? cid[0] : cid;
+   await client.deleteModule(courseId as string, moduleId);
+   dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
+ };
+ const onCreateModuleForCourse = async () => {
+    if (!cid) return;
+    const courseId = Array.isArray(cid) ? cid[0] : cid;
+    const newModule = { name: moduleName, course: courseId };
+    const module = await client.createModuleForCourse(courseId, newModule);
+    dispatch(setModules([...modules, module]));
+  };
+   const onUpdateModule = async (module: any) => {
+   const courseId = Array.isArray(cid) ? cid[0] : cid;
+   await client.updateModule(courseId as string, module);
+   const newModules = modules.map((m: any) =>
+     m._id === module._id ? module : m
+   );
+   dispatch(setModules(newModules));
+ };
+
+
 
 
 
 
   return (
     <div>
-      <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={createModuleForCourse} /><br /><br /><br /><br />
+      <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={onCreateModuleForCourse} /><br /><br /><br /><br />
       <ListGroup className="rounded-0" id="wd-modules">
         {modules.map((module: Module) => (
           <ListGroupItem key={module._id} className="wd-module p-0 mb-5 fs-5 border-gray">
@@ -74,7 +97,7 @@ export default function Modules() {
                       onChange={(e) => updateModule({ ...module, name: e.target.value })}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          saveModule({ ...module, editing: false });
+                          onUpdateModule({ ...module, editing: false });
                         }
                       }}
                       defaultValue={module.name}/>
@@ -82,7 +105,7 @@ export default function Modules() {
 
               <ModuleControlButtons
                 moduleId={module._id}
-                deleteModule={(moduleId) => removeModule(moduleId)}
+                deleteModule={(moduleId) => onRemoveModule(moduleId)}
                 editModule={editModule} />
             </div>
             {module.lessons && 
