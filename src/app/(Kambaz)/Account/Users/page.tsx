@@ -53,7 +53,6 @@ export default function Users() {
     username: `newuser${Date.now()}`,
     password: "password123",
     email: `email${users.length + 1}@neu.edu`,
-    section: "S101",
     role: "STUDENT",
   });
   setUsers([...users, user]);
