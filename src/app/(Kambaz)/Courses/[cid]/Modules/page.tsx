@@ -69,8 +69,11 @@ export default function Modules() {
   };
    const onRemoveModule = async (moduleId: string) => {
    const courseId = Array.isArray(cid) ? cid[0] : cid;
-   await client.deleteModule(courseId as string, moduleId);
-   dispatch(setModules(modules.filter((m: Module) => m._id !== moduleId)));
+   const moduleToDelete = modules.find((m: Module) => m._id === moduleId);
+   if (moduleToDelete) {
+     await client.deleteModule(courseId as string, moduleToDelete);
+     dispatch(setModules(modules.filter((m: Module) => m._id !== moduleId)));
+   }
  };
   const onCreateModuleForCourse = async () => {
     if (!cid) return;
