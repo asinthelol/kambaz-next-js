@@ -51,7 +51,7 @@ export const createModuleForCourse = async (courseId: string, module: Partial<Mo
   );
   return response.data;
 };
-export const deleteModule = async (courseId: string, moduleId: string) => {
+export const deleteModule = async (courseId: string, moduleId: Module) => {
  const response = await axios.delete(
    `${COURSES_API}/${courseId}/modules/${moduleId}`
  );
