@@ -10,6 +10,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addModule, deleteModule, editModule, updateModule, setModules } from "./reducer";
+import { useSelector as useRootSelector } from "react-redux";
 import * as client from "../../client";
 import * as modulesClient from "./client";
 
@@ -29,10 +30,19 @@ type Lesson = {
   module: string;
 }
 
+interface User {
+  _id: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  role?: string;
+}
+
 export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: { modulesReducer: { modules: Module[] } }) => state.modulesReducer);
+  const { currentUser } = useRootSelector((state: { accountReducer: { currentUser: User | null } }) => state.accountReducer);
   const dispatch = useDispatch();
   const fetchModules = async () => {
     const modules = await client.findModulesForCourse(cid as string);
@@ -85,7 +95,12 @@ export default function Modules() {
 
   return (
     <div>
-      <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={onCreateModuleForCourse} /><br /><br /><br /><br />
+      {currentUser?.role !== "STUDENT" && (
+        <>
+          <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={onCreateModuleForCourse} />
+          <br /><br /><br /><br />
+        </>
+      )}
       <ListGroup className="rounded-0" id="wd-modules">
         {modules.map((module: Module) => (
           <ListGroupItem key={module._id} className="wd-module p-0 mb-5 fs-5 border-gray">
@@ -103,10 +118,12 @@ export default function Modules() {
                       defaultValue={module.name}/>
               )}
 
-              <ModuleControlButtons
-                moduleId={module._id}
-                deleteModule={(moduleId) => onRemoveModule(moduleId)}
-                editModule={editModule} />
+              {currentUser?.role !== "STUDENT" && (
+                <ModuleControlButtons
+                  moduleId={module._id}
+                  deleteModule={(moduleId) => onRemoveModule(moduleId)}
+                  editModule={editModule} />
+              )}
             </div>
             {module.lessons && 
             (<ListGroup className="wd-lessons rounded-0">
