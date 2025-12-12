@@ -46,14 +46,14 @@ export default function Modules() {
   const dispatch = useDispatch();
   const fetchModules = async () => {
     const modules = await client.findModulesForCourse(cid as string);
-    // Only update if we got data back from the API
-    if (modules && modules.length > 0) {
-      dispatch(setModules(modules));
-    }
+    dispatch(setModules(modules));
   };
   useEffect(() => {
     fetchModules();
   }, []);
+  
+  // Filter modules by current course
+  const courseModules = modules.filter((module: Module) => module.course === cid);
 
   const createModuleForCourse = async () => {
     if (!cid) return;
@@ -108,7 +108,7 @@ export default function Modules() {
         </>
       )}
       <ListGroup className="rounded-0" id="wd-modules">
-        {modules.map((module: Module) => (
+        {courseModules.map((module: Module) => (
           <ListGroupItem key={module._id} className="wd-module p-0 mb-5 fs-5 border-gray">
             <div className={`${styles["bg-secondary"]} wd-title p-3 ps-2 bg-secondary`}>
               <BsGripVertical className="me-2 fs-3" />
