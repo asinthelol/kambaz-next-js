@@ -41,7 +41,6 @@ export const deleteCourse = async (id: string) => {
 export const findModulesForCourse = async (courseId: string) => {
   const response = await axios
     .get(`${COURSES_API}/${courseId}/modules`);
-    console.log("Response data: ",response.data);
   const data = response.data;
   return Array.isArray(data) ? data : (data.modules || []);
 };

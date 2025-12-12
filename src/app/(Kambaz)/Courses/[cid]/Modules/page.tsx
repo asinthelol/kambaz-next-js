@@ -46,7 +46,10 @@ export default function Modules() {
   const dispatch = useDispatch();
   const fetchModules = async () => {
     const modules = await client.findModulesForCourse(cid as string);
-    dispatch(setModules(modules));
+    // Only update if we got data back from the API
+    if (modules && modules.length > 0) {
+      dispatch(setModules(modules));
+    }
   };
   useEffect(() => {
     fetchModules();
